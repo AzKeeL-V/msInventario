@@ -19,25 +19,25 @@ public class ProductoController {
     private ProductoService productoService;
 
     // Ruta: POST /api/productos/guardar
-    @PostMapping("/guardar")
+    @PostMapping("/guardar")                           //aqui abajo en el request body manda el archivo 
     public ResponseEntity<Producto> guardarProducto(@RequestBody Producto producto) {
         Producto nuevoProducto = productoService.agregarProducto(producto);
-        return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED); // 201 Created
+        return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED); // code 201 Created
     }
 
     // Ruta: GET /api/productos/listar
     @GetMapping("/listar")
     public ResponseEntity<List<Producto>> listarProductos() {
         List<Producto> productos = productoService.listarTodosLosProductos();
-        return new ResponseEntity<>(productos, HttpStatus.OK); // 200 OK
+        return new ResponseEntity<>(productos, HttpStatus.OK); // code 200 OK
     }
 
     // Ruta: GET /api/productos/buscarPorId/{id}
     @GetMapping("/buscarPorId/{id}")
     public ResponseEntity<Producto> buscarProductoPorId(@PathVariable Integer id) {
         Optional<Producto> producto = productoService.listarProductoPorId(id);
-        return producto.map(value -> new ResponseEntity<>(value, HttpStatus.OK)) // 200 OK
-                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // 404 Not Found
+        return producto.map(value -> new ResponseEntity<>(value, HttpStatus.OK)) // code 200 OK
+                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // code 404 Not Found
     }
 
     // Ruta: GET /api/productos/buscarPorNombre
@@ -56,9 +56,11 @@ public class ProductoController {
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<Producto> actualizarProducto(@PathVariable Integer id, @RequestBody Producto producto) {
         Producto productoActualizado = productoService.actualizarProducto(id, producto);
+        //se guardo correctamente?
         if (productoActualizado != null) {
             return new ResponseEntity<>(productoActualizado, HttpStatus.OK); // 200 OK
         } else {
+            //error
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Not Found
         }
     }

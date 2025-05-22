@@ -16,4 +16,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     // Método explícito para buscar por idProducto (redundante con JpaRepository.findById, pero si lo prefieres)
     Optional<Producto> findByIdProducto(Integer idProducto);
+    //Búsqueda sensible a mayúsculas/minúsculas
+    Optional<Producto> findByNomProducto(String nomProducto);
 }

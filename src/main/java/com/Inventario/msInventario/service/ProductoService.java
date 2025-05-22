@@ -15,12 +15,26 @@ public class ProductoService {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public Producto agregarProducto(Producto producto) {
-        return productoRepository.save(producto);
+    public Producto agregarProducto(Producto productoNuevo) {
+        // Busca si ya existe un producto con el mismo nombre
+        Optional<Producto> productoExistente = productoRepository.findByNomProducto(productoNuevo.getNomProducto());
+        // O si usaste: productoRepository.findByNomProductoIgnoreCase(productoNuevo.getNomProducto());
+
+
+        if (productoExistente.isPresent()) {
+            // Si el producto ya existe, actualiza su cantidad
+            Producto producto = productoExistente.get();
+            producto.setCantProducto(producto.getCantProducto() + productoNuevo.getCantProducto());
+            // producto.setCatProduc(productoNuevo.getCatProduc());
+            return productoRepository.save(producto); // Guarda el producto actualizado
+        } else {
+            // Si el producto no existe, guárdalo como uno nuevo
+            return productoRepository.save(productoNuevo);
+        }
     }
 
     public Producto actualizarProducto(Integer id, Producto productoDetalles) {
-        // Usamos findByIdProducto del repositorio para consistencia si lo definiste
+        // Este método está bien para actualizar un producto *específico* por su ID
         Optional<Producto> productoExistente = productoRepository.findByIdProducto(id);
         if (productoExistente.isPresent()) {
             Producto producto = productoExistente.get();
@@ -29,12 +43,12 @@ public class ProductoService {
             producto.setCantProducto(productoDetalles.getCantProducto());
             return productoRepository.save(producto);
         } else {
-            return null;
+            return null; // O lanza una excepción, según tu manejo de errores
         }
     }
 
     public boolean borrarProducto(Integer id) {
-        if (productoRepository.existsById(id)) { // existsById también funciona con el ID
+        if (productoRepository.existsById(id)) {
             productoRepository.deleteById(id);
             return true;
         }
@@ -46,7 +60,6 @@ public class ProductoService {
     }
 
     public Optional<Producto> listarProductoPorId(Integer id) {
-        // Usamos findByIdProducto para consistencia si lo definiste
         return productoRepository.findByIdProducto(id);
     }
 
